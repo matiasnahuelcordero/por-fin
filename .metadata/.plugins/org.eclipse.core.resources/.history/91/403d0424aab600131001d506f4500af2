@@ -1,0 +1,81 @@
+package minesweeper;
+
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] ar) {
+		Scanner teclado;
+		int fila;
+		int columna;
+		String action;
+		int continueGame=0;
+		Boolean isGameOver=false;
+		Boolean isWinningGame=false;
+		
+        Grid Game;
+        Game =new Grid();
+		teclado = new Scanner(System.in);
+        
+		System.out.println("The Game Started, good lock!");
+       	Game.Begin();
+       	System.out.println("");
+       	Game.display();
+       	System.out.println("");
+   		Game.displayInternal();
+   		System.out.println("");
+   		Game.displayRaw();
+   		System.out.println("");
+   		while (continueGame==0){
+        		
+		        System.out.print("Enter row: ");
+		        fila=teclado.nextInt();
+		        System.out.print("Enter Column: ");
+		        columna=teclado.nextInt();
+		        System.out.println("Enter Action: ");
+		        System.out.println("               for Uncover, press 'u'.");
+		        System.out.println("               for Flagging, press 'f'.");
+		        System.out.println("               for Clear any Flag, press 'c'.");
+		        System.out.print("               Action: ");
+		        action=teclado.next();
+		        
+		        if (action.equals("u")){
+		        	Game.uncover(fila, columna);
+		        	isGameOver=Game.stateLooseGame();
+		        	if (isGameOver==true){
+		        		System.out.print("Game Over, here is a mine: ");
+		        		System.out.print("");
+		        		continueGame=1;
+		        	}
+		        	isWinningGame=Game.stateWinGame();
+		        	if (isWinningGame==true){
+		        		System.out.print("Yeah, you Win the game!: ");
+		        		System.out.print("");
+		        		continueGame=1;
+		        	}
+		        	
+		        	Game.display();
+		        	System.out.println("");
+		        	Game.displayInternal();
+		    		System.out.println("");
+		    		Game.displayRaw();
+		    		System.out.println("");
+		        }
+		        if (action.equals("f")){
+		        	Game.flagAsMine(fila, columna);
+		        	Game.display();
+		        	Game.displayInternal();
+		    		System.out.println("");
+		    		Game.displayRaw();
+		    		System.out.println("");
+		        }
+		        if (action.equals("c")){
+		        	Game.clearFlag(fila, columna);
+		        	Game.display();
+		        	Game.displayInternal();
+		    		System.out.println("");
+		    		Game.displayRaw();
+		    		System.out.println("");
+		        }
+        	}
+        }
+}

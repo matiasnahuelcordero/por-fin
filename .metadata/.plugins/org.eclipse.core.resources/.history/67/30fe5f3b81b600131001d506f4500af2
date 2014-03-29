@@ -1,0 +1,56 @@
+package minesweeper;
+
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] ar) {
+		Scanner teclado;
+		int fila;
+		int columna;
+		String action;
+		int continueGame=0;
+		String newGame="Y";
+		Boolean isGameOver=false;
+		
+        Grid Game;
+        Game =new Grid();
+		teclado = new Scanner(System.in);
+        while (newGame.equals("Y")){
+        	System.out.println("The Game Started, good lock!");
+        	while (continueGame==0){
+        		Game.Begin();
+        		
+		        System.out.print("Enter row: ");
+		        fila=teclado.nextInt();
+		        System.out.print("Enter Column: ");
+		        columna=teclado.nextInt();
+		        System.out.print("Enter Action: ");
+		        System.out.print("               for Uncover, press 'u'.");
+		        System.out.print("               for Flagging, press 'f'.");
+		        System.out.print("               for Clear any Flag, press 'c'.");
+		        System.out.print("               Action: ");
+		        action=teclado.next();
+		        
+		        if (action=="u"){
+		        	Game.uncover(fila, columna);
+		        	isGameOver=Game.stateGame();
+		        	if (isGameOver==true){
+		        		System.out.print("Game Over, here is a mine: ");
+		        		continueGame=1;
+		        	}
+		        	Game.display();
+		        }
+		        if (action=="f"){
+		        	Game.flagAsMine(fila, columna);
+		        	Game.display();
+		        }
+		        if (action=="c"){
+		        	Game.clearFlag(fila, columna);
+		        	Game.display();
+		        }
+        	}
+        	System.out.print("the game is over, do you want continue? for Yes press 'Y', for No press 'N': ");
+        	newGame=teclado.next();
+        }
+    }
+}

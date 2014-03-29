@@ -1,0 +1,32 @@
+package minesweeper;
+
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] ar) {
+		
+		Scanner teclado;
+		int fila;
+		int columna;
+		String action;
+		
+        Grid Game;
+        Game =new Grid();
+        Game.Begin(3,4);
+        
+        teclado = new Scanner(System.in);
+		System.out.print("Enter row: ");
+		fila=teclado.nextInt();
+		System.out.print("Enter Column: ");
+		columna=teclado.nextInt();
+		System.out.print("Enter Action: ");
+		System.out.print("               for Uncover, press 'u'.");
+		System.out.print("               for Flagging, press 'f'.");
+		System.out.print("               for Clear any Flag, press 'c'.");
+		System.out.print("               Action: ");
+		action=teclado.next();
+		
+		
+		
+    }
+}

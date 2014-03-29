@@ -1,0 +1,12 @@
+package minesweeper;
+
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] ar) {
+        Grid Game;
+        Game =new Grid();
+        Game.Begin(3,4);
+        Game.play();
+    }
+}

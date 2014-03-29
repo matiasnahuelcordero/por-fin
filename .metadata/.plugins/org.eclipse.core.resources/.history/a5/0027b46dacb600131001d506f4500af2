@@ -1,0 +1,337 @@
+package minesweeper;
+
+import java.util.Random;
+import java.util.Scanner;
+import java.util.Set;
+
+import com.despegar.highflight.utils.Matrix2DCellPosition;
+import com.despegar.highflight.utils.MatrixUtils;
+
+public class Grid {
+	Boolean isGameOver=false;
+	Boolean isWinningGame=false;
+	Scanner teclado; 
+	
+	int countSee=0;
+	int colGame=4;
+	int rowGame=4;
+	int k=colGame*rowGame*15/100;
+	int win=colGame*rowGame-k;
+	
+	String[][] matrixVisual;
+    int [][] matrixBinary;
+    int [][] matrixStateFlag;
+    String[][] matrixPosition;
+  
+	public void Begin (){
+		
+		int i;
+		int j;
+		int valueRow;
+		int valueCol;
+		int meterMine=0;
+		
+		matrixVisual = new String[rowGame][colGame];
+		matrixBinary = new int[rowGame][colGame];
+		matrixStateFlag = new int[rowGame][colGame];
+		matrixPosition = new String[rowGame][colGame];
+		Random randRow = new Random();
+		Random randCol = new Random();
+		
+		for (i=0;i<rowGame;i=i+1){
+			for (j=0;j<colGame;j=j+1){
+					matrixBinary[i][j]=0;
+					matrixStateFlag[i][j]=0;
+					matrixVisual[i][j]="-";
+					matrixPosition[i][j]="-";
+				}
+			}	
+		
+		for (i=0;i<k;i=i+1){
+			valueRow = randRow.nextInt(rowGame);
+			valueCol = randCol.nextInt(colGame);	
+			if (matrixBinary[valueRow][valueCol]==1){
+				while (matrixBinary[valueRow][valueCol]==1){
+					valueRow = randRow.nextInt(rowGame);
+					valueCol = randCol.nextInt(colGame);
+				}
+			} 
+			matrixBinary[valueRow][valueCol]=1;
+		}	
+		
+		for (i=0;i<rowGame;i=i+1){
+			for (j=0;j<colGame;j=j+1){
+				meterMine=0;
+				if ((i-1)>=0){
+					if (matrixBinary[i-1][j]==1){
+						meterMine=meterMine+1;
+					}
+					if ((j-1)>=0){
+						if (matrixBinary[i-1][j-1]==1){
+							meterMine=meterMine+1;
+						}	
+					}
+					if ((j+1)<colGame){
+						if (matrixBinary[i-1][j+1]==1){
+							meterMine=meterMine+1;
+						}
+					}	
+				}//end row-1
+				
+				if ((j-1)>=0){
+					if (matrixBinary[i][j-1]==1){
+					meterMine=meterMine+1;
+					}
+					if ((i+1)<rowGame){
+						if (matrixBinary[i+1][j-1]==1){
+							meterMine=meterMine+1;
+						}
+					}
+				}//end col-1
+				
+				if ((i+1)<rowGame){
+					if (matrixBinary[i+1][j]==1){
+						meterMine=meterMine+1;
+					}
+					if ((j+1)<colGame){
+						if (matrixBinary[i+1][j+1]==1){
+							meterMine=meterMine+1;
+						}
+					}
+				}//end row+1
+				
+				if ((j+1)<colGame){
+					if (matrixBinary[i][j+1]==1){
+						meterMine=meterMine+1;
+					}
+				}
+				
+				switch(meterMine) {
+				 case 1: 
+					 matrixPosition[i][j]="1";
+				     break;
+				 case 2: 
+					 matrixPosition[i][j]="2";
+				     break;
+				 case 3: 
+					 matrixPosition[i][j]="3";
+				     break;
+				 case 4: 
+					 matrixPosition[i][j]="4";
+				     break;
+				 case 5:
+					 matrixPosition[i][j]="5";
+					 break;
+				 case 6: 
+					 matrixPosition[i][j]="6";
+				     break;
+				 case 7: 
+					 matrixPosition[i][j]="7";
+				     break;
+				 case 8: 
+					 matrixPosition[i][j]="8";
+				     break;
+				 case 0:  
+					 matrixPosition[i][j]="0";
+					 break;
+				}
+			}	
+		}
+		
+	}//end public void Begin
+	
+	public void uncover(int row, int col){	
+		int i;
+		int j;
+		
+		//inicio validacion
+			while (matrixStateFlag[row][col]==2){
+				teclado=new Scanner(System.in);
+	            System.out.print("Enter a righ option:");
+	            System.out.print("Enter row: ");
+			    row=teclado.nextInt();
+			    System.out.print("Enter Column: ");
+			    col=teclado.nextInt();
+			}
+			
+			while ((matrixStateFlag[row][col]==1)){
+				teclado=new Scanner(System.in);
+	            System.out.print("Enter a righ option:");
+	            System.out.print("Enter row: ");
+			    row=teclado.nextInt();
+			    System.out.print("Enter Column: ");
+			    col=teclado.nextInt();
+			}
+		
+			while (row<0||col<0){
+				teclado=new Scanner(System.in);
+	            System.out.print("Enter a righ option:");
+	            System.out.print("Enter row: ");
+			    row=teclado.nextInt();
+			    System.out.print("Enter Column: ");
+			    col=teclado.nextInt();
+			}
+		
+			while (row>rowGame||col>colGame){
+				teclado=new Scanner(System.in);
+	            System.out.print("Enter a righ option:");
+	            System.out.print("Enter row: ");
+			    row=teclado.nextInt();
+			    System.out.print("Enter Column: ");
+			    col=teclado.nextInt();
+			}
+		
+			//fin validacion
+			
+			matrixStateFlag[row][col]=1;
+			countSee=countSee+1;
+			
+			if (matrixBinary[row][col]==1){
+				isGameOver=true;
+				
+				for (i=0;i<rowGame;i=i+1){
+					for (j=0;j<colGame;j=j+1){
+							if (matrixBinary[i][j]==1){
+								matrixVisual[i][j]="X";
+							}
+						}
+					}
+			}
+			else {
+				Set<Matrix2DCellPosition>cascada = MatrixUtils.cascade(matrixBinary,row,col);
+				for (Matrix2DCellPosition cascada2:cascada){
+					matrixStateFlag[cascada2.getRow()][cascada2.getColumn()]=1;
+				    matrixVisual[cascada2.getRow()][cascada2.getColumn()]="0";
+						}
+				 }
+			if (countSee==win){
+				isWinningGame=true;
+			}
+			
+	}//end public void uncover
+	
+	public Boolean stateLooseGame(){
+		return isGameOver;
+	}
+	
+	public Boolean stateWinGame(){
+		return isWinningGame;
+	}
+	
+	public void flagAsMine(int row,int col){
+		
+		while ((matrixStateFlag[row][col]==2)||(matrixStateFlag[row][col]==1)){
+			teclado=new Scanner(System.in);
+            System.out.print("Enter a righ option for flag:");
+            System.out.print("Enter row: ");
+		    row=teclado.nextInt();
+		    System.out.print("Enter Column: ");
+		    col=teclado.nextInt();
+		}
+		while (row<0||col<0){
+			teclado=new Scanner(System.in);
+	        System.out.print("Enter a righ option:");
+	        System.out.print("Enter row: ");
+			row=teclado.nextInt();
+	    	System.out.print("Enter Column: ");
+		    col=teclado.nextInt();
+		}
+
+		while (row>rowGame||col>colGame){
+			teclado=new Scanner(System.in);
+	        System.out.print("Enter a righ option:");
+	        System.out.print("Enter row: ");
+	        row=teclado.nextInt();
+			System.out.print("Enter Column: ");
+	        col=teclado.nextInt();
+		}
+		
+		matrixStateFlag[row][col]=2;
+		matrixVisual[row][col]="F";
+	}
+	
+	public void clearFlag (int row,int col){
+		
+		while ((matrixStateFlag[row][col]==0)||(matrixStateFlag[row][col]==1)){
+			teclado=new Scanner(System.in);
+            System.out.print("Enter a righ option for Clear flag:");
+            System.out.print("Enter row: ");
+		    row=teclado.nextInt();
+		    System.out.print("Enter Column: ");
+		    col=teclado.nextInt();
+		}
+		
+		while (row<0||col<0){
+			teclado=new Scanner(System.in);
+	        System.out.print("Enter a righ option:");
+	        System.out.print("Enter row: ");
+		    row=teclado.nextInt();
+			System.out.print("Enter Column: ");
+			col=teclado.nextInt();
+		}
+		while (row>rowGame||col>colGame){
+			teclado=new Scanner(System.in);
+	        System.out.print("Enter a righ option:");
+	        System.out.print("Enter row: ");
+		    row=teclado.nextInt();
+		    System.out.print("Enter Column: ");
+		    col=teclado.nextInt();
+	    }
+		
+		matrixStateFlag[row][col]=0;
+		matrixVisual[row][col]="-";
+		
+	}//end public void clearFlag
+	
+	public void display(){
+		int i;
+		int j;
+		
+		for (i=0;i<rowGame;i=i+1){
+			for (j=0;j<colGame;j=j+1){
+				System.out.print(matrixVisual[i][j]+" ");
+			}
+			System.out.println("");
+		}
+	}//end public void display
+	
+	public void displayInternal(){
+		int i;
+		int j;
+		
+		for (i=0;i<rowGame;i=i+1){
+			for (j=0;j<colGame;j=j+1){
+				if (matrixStateFlag[i][j]==1){
+					System.out.print(matrixStateFlag[i][j]+" ");
+				}
+				else{
+					System.out.print("0 ");
+				}
+			}
+			System.out.println("");
+		}
+	}//end public void displayInternal
+	
+	public void  displayPosition(){
+		int i;
+		int j;
+		
+		for (i=0;i<rowGame;i=i+1){
+			for (j=0;j<colGame;j=j+1){
+				System.out.print(matrixPosition[i][j]+" ");
+			}
+			System.out.println("");
+		}
+	}
+	public void displayRaw(){
+		int i;
+		int j;
+		
+		for (i=0;i<rowGame;i=i+1){
+			for (j=0;j<colGame;j=j+1){
+				System.out.print(matrixBinary[i][j]+" ");
+			}
+			System.out.println("");
+		}
+	}//end public void displayInternal
+}//end public class Grid
